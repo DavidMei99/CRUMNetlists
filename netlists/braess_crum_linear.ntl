@@ -1,0 +1,47 @@
+### Example simulator netlist file ############################################
+
+# This is a comment. 
+# Statements are delimited by any arbitrary whitespace
+
+
+
+### Network definition statements #############################################
+
+# type: declare network type
+# usage: type [multiod | singleod]
+#   defaults to singleod
+type singleod 
+
+# edge: describe the topology in terms of edges
+# usage: edge_name start_node end_node [fft=0] [ddt=0]
+#   fft (free flow time) and ddt (driver dependent time) kwargs are optional
+#       and default to 0
+latency linear
+
+edge S v fft=0.01 ddt=10
+edge S w fft=40000 ddt=0.01
+edge v w fft=0.01 ddt=0.01
+edge v D fft=40000 ddt=0.01
+edge w D fft=0.01 ddt=10
+
+### Trip and route definition statements ######################################
+trip index=0 routes=3 name=SD agents=4000
+
+route S,v,w,D trip=0 route=0 so=4
+route S,w,D trip=0 route=1 so=1998
+route S,v,D trip=0 route=2 so=1998
+
+### Algorithm setting statements ##############################################
+#Baseline
+
+### Analysis statements #######################################################
+
+# crum: run the simulation over every combination of g, p
+# usage: crum g=values p=values [steps=200]
+#   g: fraction of agents that change routes per iteration
+#   p: fraction of agents that use the crum
+#   steps: number of iterations to run the simulation, defaults to 200 
+#   Where values is any valid Python expression that returns an iterator over
+#       numeric values, ex "[0,1,2]", "range(3)". 
+#       The expression should be quoted
+crum g=[0.4,0.6] p=[0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9] steps=200

@@ -1,0 +1,86 @@
+### Example simulator netlist file ############################################
+
+# This is a comment. 
+# Statements are delimited by any arbitrary whitespace
+
+
+
+### Network definition statements #############################################
+
+# type: declare network type
+# usage: type [multiod | singleod]
+#   defaults to singleod
+type singleod 
+
+# edge: describe the topology in terms of edges
+# usage: edge_name start_node end_node [fft=0] [ddt=0]
+#   fft (free flow time) and ddt (driver dependent time) kwargs are optional
+#       and default to 0
+latency bpr
+
+# alpha=0.15, beta=4
+edge S v time=0.01 capacity=50.297337187317420
+edge S w time=40000 capacity=12649.11064067352
+edge v w time=0.01 capacity=282.8427124746190
+edge v D time=40000 capacity=12649.11064067352
+edge w D time=0.01 capacity=50.297337187317420
+
+# alpha=0.15, beta=10
+# edge S v time=0.01 capacity=684.1625741670061
+# edge S w time=40000 capacity=6242.597187518447
+# edge v w time=0.01 capacity=1365.083801547529
+# edge v D time=40000 capacity=6242.597187518447
+# edge w D time=0.01 capacity=684.1625741670061
+
+# alpha=0.2, beta=4
+# edge S v time=0.01 capacity=54.0480061922814
+# edge S w time=40000 capacity=13592.3539587770
+# edge v w time=0.01 capacity=303.934274260637
+# edge v D time=40000 capacity=13592.3539587770
+# edge w D time=0.01 capacity=54.0480061922814
+
+# alpha=0.2, beta=10
+# edge S v time=0.01 capacity=704.130549189998
+# edge S w time=40000 capacity=6424.79368499675
+# edge v w time=0.01 capacity=1404.92514961714
+# edge v D time=40000 capacity=6424.79368499675
+# edge w D time=0.01 capacity=704.130549189998
+
+
+### Trip and route definition statements ######################################
+trip index=0 routes=3 name=SD agents=4000
+
+# alpha=0.15, beta=4
+route S,v,w,D trip=0 route=0 so=834
+route S,w,D trip=0 route=1 so=1583
+route S,v,D trip=0 route=2 so=1583
+
+# alpha=0.15, beta=10
+# route S,v,w,D trip=0 route=0 so=1952
+# route S,w,D trip=0 route=1 so=1024
+# route S,v,D trip=0 route=2 so=1024
+
+# alpha=0.2, beta=4
+# route S,v,w,D trip=0 route=0 so=834
+# route S,w,D trip=0 route=1 so=1583
+# route S,v,D trip=0 route=2 so=1583
+
+# alpha=0.2, beta=10
+# route S,v,w,D trip=0 route=0 so=1952
+# route S,w,D trip=0 route=1 so=1024
+# route S,v,D trip=0 route=2 so=1024
+
+### Algorithm setting statements ##############################################
+
+
+### Analysis statements #######################################################
+
+# crum: run the simulation over every combination of g, p
+# usage: crum g=values t=values p=values [steps=200]
+#   g: fraction of agents that change routes per iteration
+#   p: fraction of agents that use the crum
+#   steps: number of iterations to run the simulation, defaults to 200 
+#   Where values is any valid Python expression that returns an iterator over
+#       numeric values, ex "[0,1,2]", "range(3)". 
+#       The expression should be quoted
+crum g=[0.4,0.6] p=[0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9] steps=200

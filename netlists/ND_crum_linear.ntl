@@ -1,0 +1,84 @@
+### Example simulator netlist file ############################################
+
+# This is a comment. 
+# Statements are delimited by any arbitrary whitespace
+
+
+
+### Network definition statements #############################################
+
+# type: declare network type
+# usage: type [multiod | singleod]
+#   defaults to singleod
+type multiod 
+
+# edge: describe the topology in terms of edges
+# usage: edge_name start_node end_node [fft=0] [ddt=0]
+#   fft (free flow time) and ddt (driver dependent time) kwargs are optional
+#       and default to 0
+latency linear
+
+edge A  E  fft=7  ddt=0.0125
+edge A  L fft=9  ddt=0.01
+edge D  E  fft=9  ddt=0.01
+edge D  I  fft=12  ddt=0.005
+edge E  F  fft=3  ddt=0.0075
+edge E  I  fft=9  ddt=0.0075
+edge F  G  fft=5  ddt=0.0125
+edge F  J fft=13  ddt=0.005
+edge G  H  fft=5  ddt=0.0125
+edge G  K fft=9  ddt=0.0125
+edge H  B  fft=9  ddt=0.0125
+edge I  J fft=10  ddt=0.005
+edge I  M fft=9  ddt=0.005
+edge J  K fft=6  ddt=0.0025
+edge K  B  fft=9  ddt=0.005
+edge K  C  fft=8  ddt=0.01
+edge L  F  fft=7  ddt=0.0025
+edge L  H  fft=14 ddt=0.01
+edge M  C  fft=11 ddt=0.01
+
+### Trip and route definition statements ######################################
+trip index=0 routes=8 name=AB   agents=400
+trip index=1 routes=6 name=AC   agents=800
+trip index=2 routes=5 name=DB   agents=600
+trip index=3 routes=6 name=DC   agents=200
+
+route A,E,F,G,H,B trip=0 route=0 so=0
+route A,E,F,G,K,B trip=0 route=1 so=0
+route A,E,F,J,K,B trip=0 route=2 so=0
+route A,E,I,J,K,B trip=0 route=3 so=0
+route A,L,F,G,H,B trip=0 route=4 so=0
+route A,L,F,G,K,B trip=0 route=5 so=0
+route A,L,F,J,K,B trip=0 route=6 so=0
+route A,L,H,B trip=0 route=7 so=400
+route A,E,F,G,K,C trip=1 route=0 so=74
+route A,E,F,J,K,C trip=1 route=1 so=164
+route A,E,I,J,K,C trip=1 route=2 so=0
+route A,E,I,M,C trip=1 route=3 so=345
+route A,L,F,G,K,C trip=1 route=4 so=113
+route A,L,F,J,K,C trip=1 route=5 so=104
+route D,E,F,G,H,B trip=2 route=0 so=80
+route D,E,F,G,K,B trip=2 route=1 so=5
+route D,E,F,J,K,B trip=2 route=2 so=1
+route D,E,I,J,K,B trip=2 route=3 so=0
+route D,I,J,K,B trip=2 route=4 so=514
+route D,E,F,G,K,C trip=3 route=0 so=0
+route D,E,F,J,K,C trip=3 route=1 so=0
+route D,E,I,J,K,C trip=3 route=2 so=0
+route D,E,I,M,C trip=3 route=3 so=0
+route D,I,J,K,C trip=3 route=4 so=0
+route D,I,M,C trip=3 route=5 so=200
+
+### Analysis statements #######################################################
+
+# trpf: run the simulation over every combination of g, t, p
+# usage: trpf g=values t=values p=values [steps=200]
+#   g: fraction of agents that change routes per iteration
+#   t: number of previous rounds to take into account in the TRPF
+#   p: fraction of agents that use the TRPF
+#   steps: number of iterations to run the simulation, defaults to 200 
+#   Where values is any valid Python expression that returns an iterator over
+#       numeric values, ex "[0,1,2]", "range(3)". 
+#       The expression should be quoted
+crum g=[0.4,0.6] p=[0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9] steps=200

@@ -1,0 +1,3 @@
+# **Latency Function Parameters**
+
+This repo includes the latency function parameters used in the paper "Traffic Optimization Using a Coordinated Route Updating Mechanism". Three networks, Braess, ND (Nguyen & Dupuis) and Sioux Falls, are experimented. There are two latency functions. One is linear, and its parameters involve a free-flow time (fft) and a driver-dependent time (ddt). The other one is BPR, and its parameters include the free-flow time, an edge capacity and two constants ($\alpha$ and $\beta$).
